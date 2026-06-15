@@ -1,7 +1,11 @@
 var playerTurn, moves, isGameOver, span;
+
 playerTurn = "x";
 moves = 0;
 isGameOver = false;
+
+var gameMode = "local";
+
 span = document.getElementsByTagName("span");
 const restartButton = `<button onclick="playAgain()" aria-label="Restart Game"><svg xmlns="http://www.w3.org/2000/svg"
     width="30" height="30" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
@@ -15,12 +19,6 @@ function play(y){
        y.innerHTML = playerTurn ;
        y.dataset.player = playerTurn;
        moves++;
-       if(playerTurn == "x"){
-        playerTurn = "o";
-       }else if(playerTurn == "o"){
-        playerTurn = "x";
-       }
-    }
 
     checkWinner(1,2,3);
     checkWinner(4,5,6);
@@ -34,6 +32,20 @@ function play(y){
 
     if(moves == 9 && isGameOver == false){
         draw();
+        return;
+    }
+
+    if(playerTurn == "x"){
+        playerTurn = "o";
+    }else{
+        playerTurn = "x";
+    }
+}
+
+    if(gameMode === "bot" && playerTurn === "o" && !isGameOver){
+        setTimeout(() => {
+            botMove();
+        }, 300);
     }
 }
 
@@ -52,12 +64,15 @@ function checkWinner(a,b,c){
 }
 
 function playAgain(){
-    document.getElementsByClassName("alert")[0].parentNode.removeChild
-    (document.getElementsByClassName("alert")[0]);
+    var alertBox = document.getElementsByClassName("alert")[0];
+    if(alertBox){
+        alertBox.remove();
+    }
     resetGame();
     window.isGameOver = false;
+    moves = 0;
     for(var k = 0; k < span.length; k++){
-        span[k].parentNode.className = span[k].parentNode.className.replace("activeBox", "");
+        span[k].parentNode.classList.remove("activeBox");
     }
 }
 
@@ -70,13 +85,13 @@ function resetGame(){
 }
 
 function gameOver(a){
-    var gameOverAlertElement ="<b> GAME OVER</b> <br> player" + 
-    span[a].dataset.player.toUpperCase() + '  Wins !!! <br><br>' +
-    restartButton;
+
+    var gameOverAlertElement = `<div class="winnerText"> 🎉 PLAYER ${span[a].dataset.player.toUpperCase()} 
+    WINS 🎉<br><br> ${restartButton}</div>`;
     var div = document.createElement("div");
     div.className = "alert";
     div.innerHTML = gameOverAlertElement;
-    document.getElementsByTagName("body")[0].appendChild(div);
+    document.body.appendChild(div);
     window.isGameOver = true;
     moves = 0;
 }
@@ -89,4 +104,52 @@ function draw(){
     document.getElementsByTagName("body")[0].appendChild(div);
     window.isGameOver = true;
     moves = 0;
+}
+
+function setMode(mode){
+    gameMode = mode;
+
+    if(mode == "local"){
+        document.getElementById("modeText").innerHTML = "Mode: vs Players 🧠";
+    }
+
+    else{
+        document.getElementById("modeText").innerHTML = "Mode: vs Bot 🤖";
+    }
+
+    playAgain();
+}
+
+function botMove(){
+    let empty = [];
+    
+    for(var i = 0; i < span.length; i++){
+        if(span[i].dataset.player == "none"){
+            empty.push(span[i]);
+        }
+    }
+
+    if(empty.length == 0) return;
+
+    let randomBox = empty[Math.floor(Math.random() * empty.length)]
+
+    randomBox.innerHTML = "o";
+    randomBox.dataset.player = "o";
+    moves++;
+
+    checkWinner(1,2,3);
+    checkWinner(4,5,6);
+    checkWinner(7,8,9);
+    checkWinner(1,4,7);
+    checkWinner(2,5,8);
+    checkWinner(3,6,9);
+    checkWinner(1,5,9);
+    checkWinner(3,5,7);
+
+    if(moves == 9 && !isGameOver){
+        draw()
+        return;
+    }
+
+    playerTurn = "x";
 }
