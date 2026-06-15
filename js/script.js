@@ -12,12 +12,11 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-// calmer star field
 const stars = Array.from({ length: 320 }, () => ({
     x: Math.random(),
     y: Math.random(),
     r: Math.random() * 1.4 + 0.3,
-    speed: Math.random() * 0.05 + 0.01, // slow only
+    speed: Math.random() * 0.05 + 0.01,
     phase: Math.random() * Math.PI * 2
 }));
 

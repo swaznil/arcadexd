@@ -71,7 +71,7 @@ function resetGame(){
 
 function gameOver(a){
     var gameOverAlertElement ="<b> GAME OVER</b> <br> player" + 
-    span[a].dataset.player.toUpperCase() + ' Win !!! <br><br>' +
+    span[a].dataset.player.toUpperCase() + '  Wins !!! <br><br>' +
     restartButton;
     var div = document.createElement("div");
     div.className = "alert";
