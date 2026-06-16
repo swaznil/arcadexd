@@ -191,6 +191,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+
+    let mouseStartX = 0;
+    let mouseStartY = 0;
+    let isDragging = false;
+
+    document.addEventListener('mousedown', e => {
+        isDragging = true;
+        mouseStartX = e.clientX;
+        mouseStartY = e.clientY;
+    });
+
+    document.addEventListener('mouseup', e => {
+        if (!isDragging) return;
+
+        const dx = e.clientX - mouseStartX;
+        const dy = e.clientY - mouseStartY;
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx > 40) {
+                move('ArrowRight');
+            } else if (dx < -40) {
+                move('ArrowLeft');
+            }
+        } else {
+            if (dy > 40) {
+                move('ArrowDown');
+            } else if (dy < -40) {
+                move('ArrowUp');
+            }
+        }
+
+        isDragging = false;
+    });
+
+
     document.getElementById('restart-btn').addEventListener('click', restartGame);
 
     initializeGame();
