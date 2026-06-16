@@ -9,6 +9,7 @@ generateGrid();
 
 function generateGrid(){
     lockGame = false;
+    setMessage("");
     grid.innerHTML = "";
 
         for(let row = 0; row < SIZE; row++){
