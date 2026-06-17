@@ -410,14 +410,11 @@ header p {
 
 .construction::after {
     content: "COMING SOON";
-
     position: absolute;
     right: 12px;
     bottom: 10px;
-
     font-size: .8rem;
     letter-spacing: 2px;
     font-weight: bold;
-
     color: rgba(255,190,0,.5);
 }
