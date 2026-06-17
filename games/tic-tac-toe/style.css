@@ -239,3 +239,24 @@ span.o {
         box-shadow: 0 0 25px rgb(50, 205, 50);
     }
 }
+
+.back-btn{
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(20,20,20,0.7);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 999;
+    transition: 0.2s;
+    backdrop-filter: blur(10px);
+}
+
+.back-btn:hover{
+    transform: translateY(-2px);
+    background: rgba(40,40,40,0.8);
+}

@@ -44,9 +44,18 @@ header p {
 
 .game-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
     margin-top: 20px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 900px) {
+    .game-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 .game-card:hover {
@@ -64,6 +73,7 @@ header p {
     color: white;
     text-decoration: none;
     transition: transform 0.2s ease, background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .game-card h2 {
@@ -121,8 +131,26 @@ header p {
 }
 
 .play-tag {
-    margin-top: 10px;
+    margin-top: 12px;
+    margin-left: auto;
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 0.85 rem;
     color: #7df9ff;
     font-weight: bold;
-    letter-spacing: 1px;
+    letter-spacing: 0.75px;
+    background: rgba(0, 255, 255, 0.08);
+    border: 1px solid rgba(125, 249, 255, 0.5);
+    border-radius: 999px;
+
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
+
+    transition: all 0.2s ease;
+}
+
+.play-tag:hover {
+    background: rgba(0, 255, 255, 0.15);
+    box-shadow: 0 0 18px rgba(0, 255, 255, 0.4);
+    transform: translateY(-2px);
 }
