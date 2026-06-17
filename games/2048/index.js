@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector(".grid");
     const size = 4;
     let board = [];
+    let prevBoard = [];
+    let isGameOver = false;
     let currentScore = 0;
     const currentScoreElem = document.getElementById("current-score");
     let highScore = localStorage.getItem("2048-highScore") || 0;
@@ -23,44 +25,57 @@ document.addEventListener('DOMContentLoaded', () => {
     function restartGame() {
         currentScore = 0;
         currentScoreElem.textContent = '0';
+        isGameOver = false;
         gameOverElem.style.display = 'none';
         initializeGame();
     }
 
     function initializeGame() {
-        board = [...Array(size)].map(e => Array(size).fill(0));
+        board = [...Array(size)].map(() => Array(size).fill(0));
+        prevBoard = structuredClone(board);
+        isGameOver = false;
+
+        document.querySelectorAll('.cell').forEach(cell => {
+            cell.textContent = '';
+            delete cell.dataset.value;
+            cell.classList.remove('merged-tile', 'new-tile');
+        });
+
         placeRandom();
         placeRandom();
         renderBoard();
     }
 
     function renderBoard() {
-        for (let i = 0; i < size; i ++){
-            for (let j = 0; j < size; j ++){
-                const cell = document.querySelector(`[data-row="${i}"][data-col="${j}"]`);
-                const prevValue = cell.dataset.value;
-                const currentValue = board[i][j];
-                if (currentValue !== 0) {
-                    cell.dataset.value = currentValue;
-                    cell.textContent = currentValue;
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
 
-                    if (currentValue !== parseInt(prevValue) && !cell.classList.contains('new-tile')) {
-                        cell.classList.add('merged-tile');
-                    }
-                } else {
-                    cell.textContent = '';
-                    delete cell.dataset.value;
-                    cell.classList.remove('merged-tile', 'new-tile');
+            const cell = document.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+            const value = board[i][j];
+
+            const prevValue = prevBoard[i][j];
+
+            if (value !== 0) {
+                cell.textContent = value;
+                cell.dataset.value = value;
+
+                if (prevValue !== value) {
+                    cell.classList.add('new-tile');
+                }
+            } else {
+                cell.textContent = '';
+                delete cell.dataset.value;
                 }
             }
         }
 
+        prevBoard = structuredClone(board);
+
         setTimeout(() => {
-            const cells = document.querySelectorAll('.cell');
-            cells.forEach(cell => {
+            document.querySelectorAll('.cell').forEach(cell => {
                 cell.classList.remove('merged-tile', 'new-tile');
             });
-        }, 300);
+        }, 200);
     }
 
 
@@ -84,6 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function move(direction){
+
+        if (isGameOver) return;
+
         let hasChanged = false;
         if (direction === 'ArrowUp' || direction === 'ArrowDown') {
             for (let j = 0; j < size; j++) {
@@ -109,14 +127,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if(hasChanged){
             placeRandom();
             renderBoard();
+            window.dispatchEvent(new CustomEvent("2048-move"));
             checkGameOver();
         }
     }
 
 
-    function transform(line, moveTwoardsStart){
+    function transform(line, moveTowardsStart){
         let newLine = line.filter(cell => cell !== 0);
-        if(!moveTwoardsStart){
+        if(!moveTowardsStart){
             newLine.reverse();
         }
         
@@ -124,13 +143,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (newLine[i] === newLine[i+1]){
                 newLine[i] *= 2;
                 updateScore(newLine[i]);
+                window.dispatchEvent(new CustomEvent("2048-merge", {detail: {value: newLine[i]}}));
                 newLine.splice(i + 1, 1);
+                i++;
             }
         }
         while (newLine.length < size) {
             newLine.push(0);
         }
-        if (!moveTwoardsStart) {
+        if (!moveTowardsStart) {
             newLine.reverse();
         }
         return newLine;
@@ -152,8 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // no moves are possible
+        isGameOver = true;
         gameOverElem.style.display = 'flex';
     }
+
 
     document.addEventListener('keydown', event => {
         if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
@@ -175,17 +198,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const dx = touchEndX - touchStartX;
         const dy = touchEndY - touchStartY;
-
+        const SWIPE_THRESHOLD = 40;
+        
         if (Math.abs(dx) > Math.abs(dy)) {
-            if (dx > 40) {
+            if (dx > SWIPE_THRESHOLD) {
                 move('ArrowRight');
-            } else if (dx < -40) {
+            } else if (dx < -SWIPE_THRESHOLD) {
                 move('ArrowLeft');
             }
         } else {
-            if (dy > 40) {
+            if (dy > SWIPE_THRESHOLD) {
                 move('ArrowDown');
-            } else if (dy < -40) {
+            } else if (dy < -SWIPE_THRESHOLD) {
                 move('ArrowUp');
             }
         }
