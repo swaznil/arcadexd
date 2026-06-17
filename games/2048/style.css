@@ -249,3 +249,30 @@ h1{
     }
 }
 
+.back-btn{
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(120,220,255,.15);
+    background: rgba(255,255,255,.04);
+    backdrop-filter: blur(12px);
+    color: #f2f2f2;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: 0.2s ease;
+    box-shadow:
+        0 0 12px rgba(0,229,255,.10),
+        0 10px 30px rgba(0,0,0,.3);
+}
+
+.back-btn:hover{
+    transform: translateY(-2px);
+    background: rgba(255,255,255,.07);
+    box-shadow:
+        0 0 18px rgba(0,229,255,.25),
+        0 15px 40px rgba(0,0,0,.4);
+}

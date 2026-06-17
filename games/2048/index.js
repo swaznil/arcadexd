@@ -255,3 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGame();
 
 });
+
+function goBack(){
+    window.location.href = "/index.html"; 
+}
