@@ -25,7 +25,7 @@ window.addEventListener("mousemove", e => {
 
 resize();
 
-const particles = Array.from({ length: 180 }, () => ({
+const particles = Array.from({ length: 120 }, () => ({
     x: Math.random() * w,
     y: Math.random() * h,
     vx: (Math.random() - 0.5) * 0.8,
@@ -67,7 +67,7 @@ window.addEventListener("2048-merge", e => {
 
 window.addEventListener("2048-move", () => {
     movePulse = 1;
-    energy += 0.4;
+    energy = Math.min(energy + 0.18, 5);
 });
 
 function drawBackground() {
@@ -83,7 +83,7 @@ function drawBackground() {
 function drawAmbientGlow() {
 
     const g = ctx.createRadialGradient(w / 2,h / 2,100,w / 2,h / 2,Math.max(w,h) * 0.7);
-    g.addColorStop(0,`rgba(0,229,255,${0.08 + energy * 0.08})`);
+    g.addColorStop(0,`rgba(0,229,255,${0.002 + energy * 0.01})`);
     g.addColorStop(0.5,"rgba(168,85,247,0.04)");
     g.addColorStop(1,"rgba(0,0,0,0)");
 
