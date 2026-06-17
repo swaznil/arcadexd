@@ -45,13 +45,11 @@ function drawBackground() {
 
 function drawStars() {
     for (let s of stars) {
-
         s.y += s.speed * 0.0005;
 
         if (s.y > 1) s.y = 0;
 
         const twinkle = 0.3 + Math.sin(Date.now() * 0.001 + s.phase) * 0.3;
-
         ctx.fillStyle = `rgba(255,255,255,${twinkle})`;
         ctx.beginPath();
         ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
