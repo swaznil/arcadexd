@@ -30,5 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+const container = document.querySelector(".audio-container");
+
+container.addEventListener("click", (e) => {
+    if (e.target.id !== "music-btn") return;
+    container.classList.toggle("open");
+});
+
 musicBtn.classList.add("playing");
 musicBtn.classList.remove("playing");

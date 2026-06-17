@@ -54,9 +54,9 @@
     right: 8px;
 
     width: 42px;
-    height: 140px;
+    height: 150px;
 
-    padding: 10px;
+    padding: 0px;
 
     background: rgba(15,15,25,0.92);
     border: 1px solid rgba(255,255,255,0.12);
@@ -75,7 +75,7 @@
         transform 0.25s ease;
 }
 
-.audio-container:hover #volume-slider {
+.audio-container.open #volume-slider {
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0);
