@@ -256,6 +256,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-function goBack(){
-    window.location.href = "/index.html"; 
+function goBack() {
+    window.location.href = "../../index.html";
 }

@@ -136,6 +136,6 @@ function setMessage(text) {
     document.getElementById("status").textContent = text;
 }
 
-function goBack(){
-    window.location.href = "/index.html"; 
+function goBack() {
+    window.location.href = "../../index.html";
 }
