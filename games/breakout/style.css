@@ -1,0 +1,90 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    background: #05080a;
+    font-family: system-ui;
+    color: #d8fff5;
+}
+
+#bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+}
+
+/* LAYOUT */
+.app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+}
+
+/* HUD */
+.hud {
+    display: flex;
+    gap: 10px;
+}
+
+.panel {
+    padding: 8px 12px;
+    border: 1px solid rgba(0,255,200,0.2);
+    background: rgba(10,15,16,0.6);
+    border-radius: 10px;
+}
+
+/* GAME AREA (IMPORTANT) */
+#game {
+    position: relative;
+    width: min(900px, 92vw);
+    height: 600px;
+    border: 1px solid rgba(0,255,200,0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    background: #0a0f10;
+}
+
+/* OBJECTS */
+#paddle {
+    position: absolute;
+    height: 16px;
+    border-radius: 999px;
+    background: #00ffc6;
+}
+
+#ball {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: white;
+}
+
+.brick {
+    position: absolute;
+    height: 24px;
+    background: rgba(0,255,200,0.25);
+    border: 1px solid rgba(0,255,200,0.2);
+}
+
+/* BUTTONS */
+.back-btn, .reset-btn {
+    padding: 10px 14px;
+    border: 1px solid rgba(0,255,200,0.3);
+    background: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+#game {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}

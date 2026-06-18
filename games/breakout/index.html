@@ -3,13 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" />
     <title>Breakout</title>
-
-    <link rel = "stylesheet" href="style.css">
 </head>
+
 <body>
     <canvas id="bg"></canvas>
     <button class="back-btn" onclick="goBack()">← Back</button>
+
+<main class="app">
+    <header class="header">
+        <h1>BREAKOUT</h1>
+    </header>
+
+    <div class="hud">
+        <div class="panel">SCORE <span id="score">0</span></div>
+        <div class="panel">LIVES <span id="lives">3</span></div>
+        <div class="panel">COMBO <span id="combo">x1</span></div>
+    </div>
+
+    <div id="game"></div>
+
+    <button class="reset-btn" onclick="resetGame()">RESET</button>
+</main>
 
 <script src="index.js"></script>
 <script src="bg.js"></script>
