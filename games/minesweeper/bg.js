@@ -35,7 +35,7 @@ let glitchOffset = 0;
 function drawBackground() {
     const g = ctx.createLinearGradient(0, 0, 0, h);
 
-    g.addColorStop(0, "#05070a");
+    g.addColorStop(0, "#040608");
     g.addColorStop(1, "#000000");
 
     ctx.fillStyle = g;
