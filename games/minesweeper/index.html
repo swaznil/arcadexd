@@ -7,26 +7,31 @@
 
     <link rel = "stylesheet" href="style.css">
 </head>
+
 <body>
     <canvas id="bg"></canvas>
     <button class="back-btn" onclick="goBack()">← Back</button>
+    
     <h1> Minesweeper</h1>
+    
     <div class="hud">
 
-    <div class="panel">
-        MINES: <span id="mine-count">20</span>
+        <div class="panel">
+            MINES: <span id="mine-count">20</span>
+        </div>
+
+        <div class="panel">
+            STATUS: <span id="status">ACTIVE</span>
+        </div>
     </div>
 
-    <div class="panel">
-        STATUS: <span id="status">ACTIVE</span>
-    </div>
-
-</div>
     <p id="status"></p>
+
     <table id = "grid"></table>
+
     <button class="reset-btn" onclick="generateGrid()">RESET</button>
 
-<script src="index.js"></script>
-<script src="bg.js"></script>
+    <script src="index.js"></script>
+    <script src="bg.js"></script>
 </body>
 </html>

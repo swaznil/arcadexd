@@ -9,16 +9,6 @@ body {
     background: #05080a;
     font-family: system-ui;
     color: #d8fff5;
-}
-
-#bg {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-}
-
-/* LAYOUT */
-.app {
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -27,7 +17,13 @@ body {
     gap: 14px;
 }
 
-/* HUD */
+#bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    filter: blur(0.2px);
+}
+
 .hud {
     display: flex;
     gap: 10px;
@@ -40,7 +36,6 @@ body {
     border-radius: 10px;
 }
 
-/* GAME AREA (IMPORTANT) */
 #game {
     position: relative;
     width: min(900px, 92vw);
@@ -51,7 +46,6 @@ body {
     background: #0a0f10;
 }
 
-/* OBJECTS */
 #paddle {
     position: absolute;
     height: 16px;
@@ -74,7 +68,6 @@ body {
     border: 1px solid rgba(0,255,200,0.2);
 }
 
-/* BUTTONS */
 .back-btn, .reset-btn {
     padding: 10px 14px;
     border: 1px solid rgba(0,255,200,0.3);
