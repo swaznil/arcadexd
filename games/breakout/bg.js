@@ -2,47 +2,42 @@
     const canvas = document.getElementById("bg");
     const ctx = canvas.getContext("2d");
 
-    let w = 0;
-    let h = 0;
-
+    let w, h;
     let mouseX = 0;
     let mouseY = 0;
 
+    const BRICK_W = 120;
+    const BRICK_H = 34;
+    const BRICK_GAP = 14;
+
     const bricks = [];
     const streams = [];
-    const ripples = [];
     const particles = [];
 
-    let rippleTimer = 0;
-
-    function resizeCanvas() {
+    function resize() {
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
 
-        mouseX = w * 0.5;
-        mouseY = h * 0.5;
+        mouseX = w / 2;
+        mouseY = h / 2;
 
-        buildBricks();
+        createBricks();
     }
 
-    function buildBricks() {
+    function createBricks() {
         bricks.length = 0;
 
-        const bw = 120;
-        const bh = 34;
-        const gap = 14;
+        const cols = Math.ceil(w / (BRICK_W + BRICK_GAP));
 
-        const cols = Math.ceil(w / (bw + gap));
-        const rows = 8;
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < cols; col++) {
+                if (Math.random() < 0.08) continue;
 
-        for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
                 bricks.push({
-                    x: x * (bw + gap),
-                    y: 50 + y * (bh + gap),
-                    alpha: Math.random() * 0.05 + 0.02,
-                    pulse: Math.random() * Math.PI * 2,
-                    broken: Math.random() < 0.08
+                    x: col * (BRICK_W + BRICK_GAP),
+                    y: 50 + row * (BRICK_H + BRICK_GAP),
+                    alpha: 0.03 + Math.random() * 0.04,
+                    pulse: Math.random() * Math.PI * 2
                 });
             }
         }
@@ -51,12 +46,12 @@
     function createStreams() {
         streams.length = 0;
 
-        for (let i = 0; i < 25; i++) {
+        for (let i = 0; i < 20; i++) {
             streams.push({
                 x: Math.random() * w,
                 y: Math.random() * h,
-                speed: Math.random() * 1 + 0.4,
-                len: Math.random() * 120 + 60
+                speed: 0.4 + Math.random(),
+                length: 60 + Math.random() * 120
             });
         }
     }
@@ -64,40 +59,41 @@
     function createParticles() {
         particles.length = 0;
 
-        for (let i = 0; i < 80; i++) {
+        for (let i = 0; i < 40; i++) {
             particles.push({
                 x: Math.random() * w,
                 y: Math.random() * h,
-                size: Math.random() * 2 + 0.5,
-                speed: Math.random() * 0.3 + 0.1,
-                alpha: Math.random() * 0.4 + 0.1
+                size: 0.5 + Math.random() * 2,
+                speed: 0.1 + Math.random() * 0.3,
+                alpha: 0.15 + Math.random() * 0.25
             });
         }
     }
 
     function drawBackground() {
-        const gradient = ctx.createLinearGradient(0, 0, 0, h);
-        gradient.addColorStop(0, "#05080a");
-        gradient.addColorStop(1, "#020304");
+        const bg = ctx.createLinearGradient(0, 0, 0, h);
 
-        ctx.fillStyle = gradient;
+        bg.addColorStop(0, "#0d1418");
+        bg.addColorStop(1, "#06090c");
+
+        ctx.fillStyle = bg;
         ctx.fillRect(0, 0, w, h);
     }
 
     function drawGrid() {
-        ctx.strokeStyle = "rgba(0,255,200,0.03)";
+        ctx.strokeStyle = "rgba(0,255,200,0.05)";
         ctx.lineWidth = 1;
 
-        const gap = 40;
+        const size = 40;
 
-        for (let x = 0; x < w; x += gap) {
+        for (let x = 0; x < w; x += size) {
             ctx.beginPath();
             ctx.moveTo(x, 0);
             ctx.lineTo(x, h);
             ctx.stroke();
         }
 
-        for (let y = 0; y < h; y += gap) {
+        for (let y = 0; y < h; y += size) {
             ctx.beginPath();
             ctx.moveTo(0, y);
             ctx.lineTo(w, y);
@@ -105,88 +101,31 @@
         }
     }
 
-    function drawBricks() {
-        const time = performance.now() * 0.001;
-
-        ctx.lineWidth = 2;
-
-        for (const brick of bricks) {
-            if (brick.broken) continue;
-
-            const glow =
-                brick.alpha +
-                Math.sin(time + brick.pulse) * 0.025;
-
-            ctx.strokeStyle = `rgba(0,255,200,${glow})`;
-
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = "rgba(0,255,200,0.35)";
-
-            ctx.strokeRect(brick.x, brick.y, 120, 34);
-        }
-
-        ctx.shadowBlur = 0;
-    }
-
     function drawStreams() {
         for (const stream of streams) {
             stream.y -= stream.speed;
 
-            if (stream.y < -stream.len) {
-                stream.y = h + stream.len;
+            if (stream.y < -stream.length) {
+                stream.y = h + stream.length;
                 stream.x = Math.random() * w;
             }
 
-            const gradient = ctx.createLinearGradient(
+            const fade = ctx.createLinearGradient(
                 stream.x,
                 stream.y,
                 stream.x,
-                stream.y + stream.len
+                stream.y + stream.length
             );
 
-            gradient.addColorStop(0, "rgba(0,255,200,0)");
-            gradient.addColorStop(1, "rgba(0,255,200,0.12)");
+            fade.addColorStop(0, "rgba(0,255,200,0)");
+            fade.addColorStop(1, "rgba(0,255,200,0.15)");
 
-            ctx.strokeStyle = gradient;
+            ctx.strokeStyle = fade;
 
             ctx.beginPath();
             ctx.moveTo(stream.x, stream.y);
-            ctx.lineTo(stream.x, stream.y + stream.len);
+            ctx.lineTo(stream.x, stream.y + stream.length);
             ctx.stroke();
-        }
-    }
-
-    function spawnRipple() {
-        ripples.push({
-            x: w * 0.5 + (Math.random() - 0.5) * 500,
-            y: h * 0.35 + (Math.random() - 0.5) * 200,
-            r: 0
-        });
-    }
-
-    function drawRipples() {
-        rippleTimer++;
-
-        if (rippleTimer > 160) {
-            rippleTimer = 0;
-            spawnRipple();
-        }
-
-        for (let i = ripples.length - 1; i >= 0; i--) {
-            const ripple = ripples[i];
-
-            ripple.r += 2.2;
-
-            const alpha = Math.max(0, 0.12 - ripple.r / 2200);
-
-            ctx.strokeStyle = `rgba(0,255,200,${alpha})`;
-            ctx.lineWidth = 2;
-
-            ctx.beginPath();
-            ctx.arc(ripple.x, ripple.y, ripple.r, 0, Math.PI * 2);
-            ctx.stroke();
-
-            if (ripple.r > 320) ripples.splice(i, 1);
         }
     }
 
@@ -207,6 +146,31 @@
         }
     }
 
+    function drawBricks() {
+        const time = performance.now() * 0.001;
+
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "rgba(0,255,200,0.3)";
+
+        for (const brick of bricks) {
+            const alpha =
+                brick.alpha +
+                Math.sin(time + brick.pulse) * 0.02;
+
+            ctx.strokeStyle = `rgba(0,255,200,${alpha})`;
+
+            ctx.strokeRect(
+                brick.x,
+                brick.y,
+                BRICK_W,
+                BRICK_H
+            );
+        }
+
+        ctx.shadowBlur = 0;
+    }
+
     function drawMouseGlow() {
         const glow = ctx.createRadialGradient(
             mouseX,
@@ -214,25 +178,17 @@
             0,
             mouseX,
             mouseY,
-            240
+            120
         );
 
-        glow.addColorStop(0, "rgba(0,255,200,0.08)");
+        glow.addColorStop(0, "rgba(0,255,200,0.1)");
         glow.addColorStop(1, "rgba(0,255,200,0)");
 
         ctx.fillStyle = glow;
         ctx.fillRect(0, 0, w, h);
     }
 
-    function drawScanlines() {
-        ctx.fillStyle = "rgba(255,255,255,0.015)";
-
-        for (let y = 0; y < h; y += 4) {
-            ctx.fillRect(0, y, w, 1);
-        }
-    }
-
-    function animate() {
+    function render() {
         ctx.clearRect(0, 0, w, h);
 
         drawBackground();
@@ -240,26 +196,24 @@
         drawStreams();
         drawParticles();
         drawBricks();
-        drawRipples();
         drawMouseGlow();
-        drawScanlines();
 
-        requestAnimationFrame(animate);
+        requestAnimationFrame(render);
     }
 
     function init() {
-        resizeCanvas();
+        resize();
         createStreams();
         createParticles();
 
-        window.addEventListener("resize", resizeCanvas);
+        window.addEventListener("resize", resize);
 
         window.addEventListener("mousemove", (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
         });
 
-        animate();
+        render();
     }
 
     if (document.readyState === "loading") {
