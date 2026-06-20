@@ -3,9 +3,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const isSubFolder =
         window.location.pathname.includes("/games/");
 
-    const prefix = isSubFolder
-        ? "../../"
-        : "";
+    const prefix =
+        isSubFolder
+            ? "../../"
+            : "";
 
     let musicBtn =
         document.getElementById("music-btn");
@@ -69,6 +70,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (e.target.id === "music-btn") {
             container.classList.toggle("open");
+
+            localStorage.setItem(
+                "bgm-open",
+                container.classList.contains("open") ? "1" : "0"
+            );
         }
     });
 
@@ -89,7 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
         bgm.volume = 0.35;
     }
 
-    slider.value = String(bgm.volume);
+    slider.value =
+        String(bgm.volume);
 
     function updateUI() {
 
@@ -116,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.getItem("bgm-time");
 
         if (savedTime !== null) {
-
             bgm.currentTime =
                 parseFloat(savedTime);
         }
@@ -125,11 +131,11 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSavedTime();
 
     if (playing) {
-        bgm.play().then(() => {
-            updateUI();
-        }).catch(() => {
-            updateUI();
-        });
+
+        bgm.play()
+            .then(updateUI)
+            .catch(updateUI);
+
     } else {
         updateUI();
     }
@@ -158,15 +164,37 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         if (!playing) {
+
             try {
+
                 await bgm.play();
                 playing = true;
+
+                if (channel) {
+                    channel.postMessage({
+                        type: "play",
+                        time: bgm.currentTime
+                    });
+                }
+
+                localStorage.setItem("bgm-playing", "1");
+
             } catch (err) {
                 console.log(err);
             }
+
         } else {
+
             bgm.pause();
             playing = false;
+
+            if (channel) {
+                channel.postMessage({
+                    type: "pause"
+                });
+            }
+
+            localStorage.setItem("bgm-playing", "0");
         }
 
         updateUI();
@@ -219,7 +247,6 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (msg.type === "pause") {
 
                 playing = false;
-
                 bgm.pause();
 
             } else if (msg.type === "volume") {
@@ -229,14 +256,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 slider.value =
                     String(msg.volume);
+
+            } else if (msg.type === "sync") {
+
+                if (typeof msg.time === "number") {
+
+                    const drift =
+                        Math.abs(bgm.currentTime - msg.time);
+
+                    if (drift > 0.5) {
+                        bgm.currentTime = msg.time;
+                    }
+
+                    if (msg.playing && !playing) {
+                        bgm.play().catch(() => {});
+                        playing = true;
+                    }
+                }
             }
 
             updateUI();
         });
 
         channel.postMessage({
-            type: "play",
-            time: bgm.currentTime
+            type: "sync",
+            time: bgm.currentTime,
+            playing
         });
+
+        setInterval(() => {
+
+            if (!playing) return;
+
+            channel.postMessage({
+                type: "sync",
+                time: bgm.currentTime,
+                playing: true
+            });
+
+        }, 2000);
     }
 });
